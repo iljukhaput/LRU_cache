@@ -1,20 +1,13 @@
 #ifndef _DOUBLE_LINEKED_LIST_
 #define _DOUBLE_LINEKED_LIST_
 
-struct page_t {
-	int num;
-};
+struct page_t;
+struct list_node_t;
+struct list_t;
 
-struct list_node_t {
-	struct page_t *data;
-	struct list_node_t *next;
-	struct list_node_t *prev;
-};
-
-struct list_t {
-	struct list_node_t *top;
-	struct list_node_t *back;
-};
+void list_info(const struct list_t *lst);
+struct list_node_t *find_node(const struct list_t *lst, int val);
+int get_num(const struct page_t *p_page);
 
 struct list_t *list_create();
 int list_size(const struct list_t *lst);

@@ -2,6 +2,59 @@
 #include <stdlib.h>
 #include "double_linked_list.h"
 
+struct page_t {
+	int num;
+};
+
+struct list_node_t {
+	struct page_t *data;
+	struct list_node_t *next;
+	struct list_node_t *prev;
+};
+
+struct list_t {
+	struct list_node_t *top;
+	struct list_node_t *back;
+};
+
+// =============================================
+void list_info(const struct list_t *lst)
+{
+	if (!lst->top) {
+		printf("List is empty\n");
+		return;
+	}
+
+	printf("List: ");
+	list_print(lst);
+	int lst_size = list_size(lst);
+	printf("List size: %d\n", lst_size);
+	if (lst_size) {
+		printf("List top: %d\n", lst->top->data->num);
+		printf("List back: %d\n", lst->back->data->num);
+	}
+}
+
+struct list_node_t *find_node(const struct list_t *lst, int val)
+{
+	struct list_node_t *tmp = lst->top;
+	while (tmp) {
+		if (tmp->data->num == val) {
+			return tmp;
+		}
+		tmp = tmp->prev;
+	}
+	return 0;
+}
+
+
+
+int get_num(const struct page_t *p_page)
+{
+	return p_page->num;
+}
+
+// ===========================================================
 struct page_t *page_create(int num)
 {
 	struct page_t *p_page = malloc(sizeof(struct page_t));
