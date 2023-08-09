@@ -110,6 +110,14 @@ struct page_t *list_back(struct list_t **lst)
 	return (*lst)->back->data;
 }
 
+struct page_t *list_begin(struct list_t **lst)
+{
+	if(!(*lst)->top) {
+		return 0;
+	}
+	return (*lst)->top->data;
+}
+
 void list_pop_back(struct list_t *lst)
 {
 	if (!lst->back) {
