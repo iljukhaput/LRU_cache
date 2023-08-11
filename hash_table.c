@@ -31,9 +31,6 @@ struct hash_t *htable_create(int len)
 	struct hash_t *h = malloc(sizeof(struct hash_t));
 	h->htab = calloc(len, sizeof(struct hashmap_node_t));
 	h->len = len;
-	for (int i = 0; i < len; i++) {
-		h->htab[i] = 0;
-	}
 	return h;
 }
 
