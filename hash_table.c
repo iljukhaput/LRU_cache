@@ -29,8 +29,7 @@ int get_hash_value(struct hash_t *h, int key)
 struct hash_t *htable_create(int len)
 {
 	struct hash_t *h = malloc(sizeof(struct hash_t));
-	h->htab = (struct hashmap_node_t **)malloc(sizeof(struct hashmap_node_t) * 
-			len);
+	h->htab = calloc(len, sizeof(struct hashmap_node_t));
 	h->len = len;
 	for (int i = 0; i < len; i++) {
 		h->htab[i] = 0;
@@ -70,4 +69,21 @@ void htable_insert(struct hash_t *h, int key, struct list_node_t *list_node)
 	}
 	*hashmap_node = new_node;
 }
+
+int get_htable_len(struct hash_t *h)
+{
+	return h->len;
+}
+
+
+void print_htable_info(const struct hash_t *h)
+{
+	printf("htable->len: %d\n", h->len);
+	printf("sizeof(htable->htab): %lu\n", sizeof(h->htab));
+	printf("htable->htab: %p\n", h->htab);
+	for (int i = 0; i < h->len + 2; i++) {
+		printf("htable->htab[%i] = %p\n",i, h->htab[i]);
+	}
+}
+
 
