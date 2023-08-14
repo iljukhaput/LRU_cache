@@ -8,11 +8,12 @@ struct list_t;
 void list_info(const struct list_t *lst);
 struct list_node_t *find_node(const struct list_t *lst, int val);
 int get_num(const struct page_t *p_page);
+int get_num_from_node(const struct list_node_t *list_node);
 
 struct list_t *list_create();
 int list_size(const struct list_t *lst);
 struct page_t *list_back(struct list_t **lst);
-struct page_t *list_begin(struct list_t **lst);
+struct list_node_t *list_begin(struct list_t **lst);
 void list_pop_back(struct list_t *lst);
 void list_push_front(struct list_t *lst, struct page_t *q);
 void list_move_upfront(struct list_t *lst, struct list_node_t *p);

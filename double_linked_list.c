@@ -110,12 +110,12 @@ struct page_t *list_back(struct list_t **lst)
 	return (*lst)->back->data;
 }
 
-struct page_t *list_begin(struct list_t **lst)
+struct list_node_t *list_begin(struct list_t **lst)
 {
 	if(!(*lst)->top) {
 		return 0;
 	}
-	return (*lst)->top->data;
+	return (*lst)->top;
 }
 
 void list_pop_back(struct list_t *lst)
@@ -197,5 +197,10 @@ void list_print(const struct list_t *lst)
 		tmp = tmp->prev;
 	}
 	printf("\n");
+}
+
+int get_num_from_node(const struct list_node_t *list_node)
+{
+	return list_node->data->num;
 }
 

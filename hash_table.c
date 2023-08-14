@@ -19,7 +19,7 @@ struct hash_t {
 };
 
 
-int get_hash_value(struct hash_t *h, int key)
+int get_hash_value(const struct hash_t *h, int key)
 {
 	int hash_value = key % h->len; // TODO: replace the hash function with a normal
 	return hash_value;
@@ -29,28 +29,45 @@ int get_hash_value(struct hash_t *h, int key)
 struct hash_t *htable_create(int len)
 {
 	struct hash_t *h = malloc(sizeof(struct hash_t));
+	if (h == NULL) {
+		return NULL;
+	}
+
 	h->htab = calloc(len, sizeof(struct hashmap_node_t));
+	if (h->htab == NULL) {
+		return NULL;
+	}
+
 	h->len = len;
 	return h;
 }
 
-struct list_node_t *htable_find(struct hash_t *h, int key)
+struct hashmap_node_t *hashmap_node_find (const struct hash_t *h, int key)
 {
 	int hash_value = get_hash_value(h, key);
 	struct hashmap_node_t *tmp = h->htab[hash_value];
 	while (tmp) {
 		if (tmp->entry.key == key) {
-			return tmp->entry.node;
+			return tmp;
 		}
 		tmp = tmp->next;
 	}
 	return 0;
 }
 
+struct list_node_t *htable_find(const struct hash_t *h, int key)
+{
+	struct hashmap_node_t *find_node = hashmap_node_find(h, key);
+	if (find_node != NULL) {
+		return find_node->entry.node;
+	}
+	return 0;
+}
+
 void htable_insert(struct hash_t *h, int key, struct list_node_t *list_node)
 {
-	if (!htable_find(h, key)) {
-		printf("Non-unique key");
+	if (htable_find(h, key)) {
+		printf("Non-unique key\n");
 		return;
 	}
 
@@ -60,27 +77,83 @@ void htable_insert(struct hash_t *h, int key, struct list_node_t *list_node)
 	new_node->entry.node = list_node;
 
 	int hash_value = get_hash_value(h, key);
-	struct hashmap_node_t **hashmap_node = &h->htab[hash_value];
-	while (*hashmap_node) {
-		*hashmap_node = (*hashmap_node)->next;
+	struct hashmap_node_t *tmp = h->htab[hash_value];
+	if (tmp == NULL) {
+		h->htab[hash_value] = new_node;
+	} else {
+		while (tmp->next) {
+			tmp = tmp->next;
+		}
+		tmp->next = new_node;
 	}
-	*hashmap_node = new_node;
 }
+
+void htable_erase(struct hash_t *h, int key)
+{
+	int hash_value = get_hash_value(h, key);
+	struct hashmap_node_t *tmp = h->htab[hash_value];
+	if (tmp->entry.key == key) {
+		h->htab[hash_value] = h->htab[hash_value]->next;
+		free(tmp);
+	} else {
+		while (tmp->next != NULL) {
+			if (tmp->next->entry.key == key) {
+				break;
+			}
+			tmp = tmp->next;
+		}
+		struct hashmap_node_t *tmp_del = tmp->next;
+		tmp->next = tmp_del->next;
+		free(tmp_del);
+	}
+}
+
+void htable_free(struct hash_t *h)
+{
+
+}
+
+//==============================================================================
 
 int get_htable_len(struct hash_t *h)
 {
 	return h->len;
 }
 
-
 void print_htable_info(const struct hash_t *h)
 {
-	printf("htable->len: %d\n", h->len);
-	printf("sizeof(htable->htab): %lu\n", sizeof(h->htab));
+	printf("\nhtable->len: %d\n", h->len);
 	printf("htable->htab: %p\n", h->htab);
-	for (int i = 0; i < h->len + 2; i++) {
-		printf("htable->htab[%i] = %p\n",i, h->htab[i]);
+	int num;
+	for (int i = 0; i < h->len; i++) {
+		if (!h->htab[i]) {
+			num = 0;
+			printf("htable->htab[%d] = %d\n", i, num);
+		} else {
+			num = get_num_from_node(h->htab[i]->entry.node);
+			printf("htable->htab[%d] = %d", i, num);
+			struct hashmap_node_t *tmp = h->htab[i];
+			while (tmp->next) {
+				num = get_num_from_node(tmp->next->entry.node);
+				printf(" -> %d", num);
+				tmp = tmp->next;
+			}
+			printf("\n");
+		}
 	}
 }
 
+void print_hashmap_node_info(const struct hash_t *h, int key)
+{
+	int hash_value = get_hash_value(h, key);
+	struct hashmap_node_t *tmp = h->htab[hash_value];
+	while (tmp->next) {
+		tmp = tmp->next;
+	}
+	int num = get_num_from_node(tmp->entry.node);
+	printf("\nkey: %d\n", key);
+	printf("hash value: %d\n", hash_value);
+	printf("page_num: %d\n", num);
+
+}
 
