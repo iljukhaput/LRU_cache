@@ -110,7 +110,17 @@ void htable_erase(struct hash_t *h, int key)
 
 void htable_free(struct hash_t *h)
 {
-
+	struct hashmap_node_t *tmp;
+	for (int i=0; i < h->len; i++) {
+		while (h->htab[i] != 0) {
+			tmp = h->htab[i];
+			h->htab[i] = h->htab[i]->next;
+			free(tmp);
+		}
+	}
+	free(h->htab);
+	h->htab = NULL;
+	free(h);
 }
 
 //==============================================================================
