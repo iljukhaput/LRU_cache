@@ -8,6 +8,7 @@ struct hashmap_node_t;
 struct hash_t;
 
 struct hash_t *htable_create(int len);
+struct hashmap_node_t *hmap_node_create();
 struct list_node_t *htable_find(const struct hash_t *h, int key);
 void htable_insert(struct hash_t *h, int key, struct list_node_t *list_node);
 void htable_erase(struct hash_t *h, int key);
@@ -17,5 +18,6 @@ int get_hash_value(const struct hash_t *h, int key);
 int get_hash_table_len(struct hash_t *h);
 void print_htable_info(const struct hash_t *h);
 void print_hashmap_node_info(const struct hash_t *h, int key);
+struct hashmap_entry_t *get_entry(struct hashmap_node_t *pnode);
 
 #endif // _HASH_TABLE_

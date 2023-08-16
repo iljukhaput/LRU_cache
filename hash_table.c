@@ -25,6 +25,16 @@ int get_hash_value(const struct hash_t *h, int key)
 	return hash_value;
 }
 
+struct hashmap_entry_t *get_entry(struct hashmap_node_t *pnode)
+{
+	return &pnode->entry;
+}
+
+struct hashmap_node_t *hmap_node_create()
+{
+	struct hashmap_node_t *pnode = malloc(sizeof(struct hashmap_node_t));
+	return pnode;
+}
 
 struct hash_t *htable_create(int len)
 {
@@ -33,7 +43,7 @@ struct hash_t *htable_create(int len)
 		return NULL;
 	}
 
-	h->htab = calloc(len, sizeof(struct hashmap_node_t));
+	h->htab = calloc(len, sizeof(struct hashmap_node_t *));
 	if (h->htab == NULL) {
 		return NULL;
 	}
